@@ -1,0 +1,9 @@
+# data loading
+
+IMG_DIR: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\DeepFillv2_Pytorch\\\\results"
+ANNOTATIONS_FILE: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\Classification and Localization\\\\Data\\\\annotations_file.csv"
+
+# model hyperparameters
+NUM_EPOCHS: 15
+BATCH_SIZE: 16
+LEARNING_RATE: 0.001
