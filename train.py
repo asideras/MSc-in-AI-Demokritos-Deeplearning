@@ -8,6 +8,7 @@ from Model.network import ResNet
 from Model.network import myNetwork
 from Model.data_loader import Data_loader
 import csv
+from Model.Losses import L2Loss
 
 
 def sample_outputs():
@@ -39,7 +40,8 @@ if __name__ == '__main__':
     LEARNING_RATE = data['LEARNING_RATE']
     RESULTS_DIR = data['RESULTS_DIR']
 
-    criterion = nn.MSELoss()
+    criterion1 = nn.MSELoss()
+    criterion2 = L2Loss()
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using {device} device")
@@ -71,9 +73,12 @@ if __name__ == '__main__':
             optimizer.zero_grad()
 
             outputs = model(inputs)
-            loss = criterion(outputs, targets)
-            loss.backward()
+            loss1 = criterion1(outputs, targets)
+            loss2 = criterion2(outputs, targets)
+            loss1.backward()
             optimizer.step()
-            print(f"Loss: {loss}")
+            print(f"Loss1: {loss1}")
+            print(f"Loss2: {loss2}")
+            exit()
 
     sample_outputs()

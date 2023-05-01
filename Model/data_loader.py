@@ -15,17 +15,13 @@ class Data_loader(Dataset):
         return len(self.img_labels)
 
     def __getitem__(self, idx):
-
         id = self.img_labels.iloc[idx, 0].lstrip('0')
         filename = f"{id}_second_out.jpg"
-        img_path = os.path.join(self.img_dir,  filename)
-        image = read_image(img_path)
-
-        if self.transform:
-            image = self.transform(image / 255.0)  # normalize to range [0, 1] before applying further transforms
-        target = torch.tensor(self.img_labels.iloc[idx, 6:])
+        img_path = os.path.join(self.img_dir, filename)
+        image = read_image(img_path).float()
 
         if self.transform:
             image = self.transform(image)
+        target = torch.tensor(self.img_labels.iloc[idx, 6:])
 
         return image, target.float()

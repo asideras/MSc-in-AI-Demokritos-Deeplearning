@@ -22,7 +22,7 @@ input_path = "C:\\Users\\ANDRE\\OneDrive\\Desktop\\Andreas_Sideras\\Demokritos\\
 # print(y_max)
 
 
-results = pd.read_csv("C:\\Users\\ANDRE\\OneDrive\\Desktop\\Andreas_Sideras\\Demokritos\\Msc in AI\\2nd Semester\Deep Learning\\Classification and Localization of Inpainted Regions\\Classification and Localization\\Results\\results.csv")
+results = pd.read_csv("C:\\Users\\ANDRE\\OneDrive\\Desktop\\Andreas_Sideras\\Demokritos\\Msc in AI\\2nd Semester\Deep Learning\\Classification and Localization of Inpainted Regions\\Classification and Localization\\Results\\COLAB_RESULTS.csv")
 
 counter=1
 for index, row in results.iterrows():
