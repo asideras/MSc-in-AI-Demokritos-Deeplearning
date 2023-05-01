@@ -4,6 +4,9 @@ IMG_DIR: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demo
 ANNOTATIONS_FILE: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\Classification and Localization\\\\Data\\\\annotations_file.csv"
 
 # model hyperparameters
-NUM_EPOCHS: 15
+NUM_EPOCHS: 30
 BATCH_SIZE: 16
 LEARNING_RATE: 0.001
+
+#output
+RESULTS_DIR: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\Classification and Localization\\\\Results"
