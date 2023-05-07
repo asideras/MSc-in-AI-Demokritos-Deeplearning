@@ -39,5 +39,3 @@ def iou():
     return np.mean(res)
 
 
-iou_score = iou()
-print(iou_score)  # Output: 0.17

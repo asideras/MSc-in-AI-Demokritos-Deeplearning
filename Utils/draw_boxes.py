@@ -1,5 +1,7 @@
 import cv2
 import pandas as pd
+import yaml
+
 
 def draw_bbox(image_path, x_min, y_min, x_max, y_max):
     # Load the image
@@ -12,22 +14,16 @@ def draw_bbox(image_path, x_min, y_min, x_max, y_max):
     cv2.destroyAllWindows()
 
 
-input_path = "C:\\Users\\ANDRE\\OneDrive\\Desktop\\Andreas_Sideras\\Demokritos\\Msc in AI\\2nd Semester\\Deep Learning\\Classification and Localization of Inpainted Regions\\DeepFillv2_Pytorch\\results"
-#file = pd.read_csv("C:\\Users\\ANDRE\\OneDrive\\Desktop\\Andreas_Sideras\\Demokritos\\Msc in AI\\2nd Semester\Deep Learning\\Classification and Localization of Inpainted Regions\\Classification and Localization\\Data\\annotations_file.csv")
-# x_min, y_min, x_max, y_max = int(file.iloc[0,6]), int(file.iloc[0,7]), int(file.iloc[0,8]), int(file.iloc[0,9])
-#
-# print(x_min)
-# print(y_min)
-# print(x_max)
-# print(y_max)
+with open('../config.yaml', 'r') as file:
+    data = yaml.safe_load(file)
 
+input_path = data['IMG_DIR']
+results_dir = data['RESULTS_DIR']
+results = pd.read_csv(f"{results_dir}\\COLAB_RESULTS.csv")
 
-results = pd.read_csv("C:\\Users\\ANDRE\\OneDrive\\Desktop\\Andreas_Sideras\\Demokritos\\Msc in AI\\2nd Semester\Deep Learning\\Classification and Localization of Inpainted Regions\\Classification and Localization\\Results\\COLAB_RESULTS.csv")
-
-counter=1
+counter = 1
 for index, row in results.iterrows():
     img_path = f"{input_path}\\{counter}_second_out.jpg"
     x_min, y_min, x_max, y_max = int(row['x_min']), int(row['y_min']), int(row['x_max']), int(row['y_max'])
     draw_bbox(img_path, x_min, y_min, x_max, y_max)
-    counter+=1
-
+    counter += 1

@@ -11,14 +11,19 @@ import csv
 from Model.Losses import L2Loss
 
 
+
 def sample_outputs():
-    train_dataloader = DataLoader(training_data, batch_size=BATCH_SIZE, shuffle=False)
-    with open(f'{RESULTS_DIR}\\results.csv', mode='w', newline='') as file:
+    samples_dataloader = DataLoader(training_data, batch_size=BATCH_SIZE, shuffle=False)
+    with open(f'{RESULTS_DIR}\\training_samples.csv', mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['x_min', 'y_min', 'x_max', 'y_max'])
 
         with torch.no_grad():
-            for inputs, targets in train_dataloader:
+            for batch_idx, batch_data in enumerate(samples_dataloader):
+                if batch_idx == 3:
+                    break
+
+                inputs, targets = batch_data
                 inputs.to(device)
                 targets.to(device)
                 outputs = model(inputs)
