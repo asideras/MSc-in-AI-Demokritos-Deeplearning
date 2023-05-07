@@ -17,9 +17,9 @@ def draw_bbox(image_path, x_min, y_min, x_max, y_max):
 with open('../config.yaml', 'r') as file:
     data = yaml.safe_load(file)
 
-input_path = data['IMG_DIR']
+input_path = data['IMG_DIR_VALIDATION']
 results_dir = data['RESULTS_DIR']
-results = pd.read_csv(f"{results_dir}\\COLAB_RESULTS.csv")
+results = pd.read_csv(f"{results_dir}\\validation_results.csv")
 
 counter = 1
 for index, row in results.iterrows():

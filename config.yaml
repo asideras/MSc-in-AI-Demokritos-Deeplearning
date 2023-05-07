@@ -1,7 +1,7 @@
 # data loading
 
 IMG_DIR_TRAINING: ""
-IMG_DIR_VALIDATION: ""
+IMG_DIR_VALIDATION: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\inpainted_val"
 
 ANNOTATIONS_FILE_TRAINING: ""
 ANNOTATIONS_FILE_VALIDATION: ""
@@ -15,4 +15,4 @@ BATCH_SIZE: 16
 LEARNING_RATE: 0.001
 
 #output
-RESULTS_DIR: ""
+RESULTS_DIR: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\Classification and Localization\\\\Results"

@@ -18,7 +18,8 @@ if __name__ == '__main__':
     BATCH_SIZE = data['BATCH_SIZE']
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    model = ResNet(feature_extract=False)
+    resnet = ResNet(feature_extract=False)
+    model = resnet.model
     model.load_state_dict(torch.load('model.pth', map_location=device))
 
     testing_data = Data_loader(annotations_file=ANNOTATIONS_FILE, img_dir=IMG_DIR,
@@ -31,12 +32,14 @@ if __name__ == '__main__':
             inputs.to(device)
             output = model(inputs)
             output = output.cpu()
-            outputs.append(output)
+            temp_list = [row.tolist() for row in output]
 
-    csv_file = f'{RESULTS_DIR}\\.csv'
+            for sample in temp_list:
+                outputs.append(sample)
 
-    # Write the outputs to the CSV file
-    with open(csv_file, 'w', newline='') as file:
+    header = ["x_min", "y_min", "x_max", "y_max"]
+    csv_file = f'{RESULTS_DIR}/validation_results.csv'
+    with open(csv_file, "w", newline="") as file:
         writer = csv.writer(file)
-        writer.writerow(['Output'])
+        writer.writerow(header)
         writer.writerows(outputs)
