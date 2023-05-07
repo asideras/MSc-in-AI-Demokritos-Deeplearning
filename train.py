@@ -11,7 +11,6 @@ import csv
 from Model.Losses import L2Loss
 
 
-
 def sample_outputs():
     samples_dataloader = DataLoader(training_data, batch_size=BATCH_SIZE, shuffle=False)
     with open(f'{RESULTS_DIR}\\training_samples.csv', mode='w', newline='') as file:
@@ -23,9 +22,9 @@ def sample_outputs():
                 if batch_idx == 3:
                     break
 
-                inputs, targets = batch_data
+                inputs, _ = batch_data
                 inputs.to(device)
-                targets.to(device)
+
                 outputs = model(inputs)
 
                 for output in outputs:
@@ -38,20 +37,19 @@ if __name__ == '__main__':
     with open('config.yaml', 'r') as file:
         data = yaml.safe_load(file)
 
-    IMG_DIR = data['IMG_DIR']
-    ANNOTATIONS_FILE = data['ANNOTATIONS_FILE']
+    IMG_DIR = data['IMG_DIR_TRAINING']
+    ANNOTATIONS_FILE = data['ANNOTATIONS_FILE_TRAINING']
     NUM_EPOCHS = data['NUM_EPOCHS']
     BATCH_SIZE = data['BATCH_SIZE']
     LEARNING_RATE = data['LEARNING_RATE']
     RESULTS_DIR = data['RESULTS_DIR']
 
-    criterion1 = nn.MSELoss()
-    criterion2 = L2Loss()
+    criterion = L2Loss()
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using {device} device")
 
-    resnet = ResNet(feature_extract=True)
+    resnet = ResNet(feature_extract=False)
     model = resnet.model
 
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
@@ -78,12 +76,10 @@ if __name__ == '__main__':
             optimizer.zero_grad()
 
             outputs = model(inputs)
-            loss1 = criterion1(outputs, targets)
-            loss2 = criterion2(outputs, targets)
-            loss1.backward()
+            loss = criterion(outputs, targets)
+
+            loss.backward()
             optimizer.step()
-            print(f"Loss1: {loss1}")
-            print(f"Loss2: {loss2}")
-            exit()
 
     sample_outputs()
+    torch.save(model.state_dict(), 'model.pth')

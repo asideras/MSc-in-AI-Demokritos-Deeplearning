@@ -1,7 +1,13 @@
 # data loading
 
-IMG_DIR: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\DeepFillv2_Pytorch\\\\results"
-ANNOTATIONS_FILE: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\Classification and Localization\\\\Data\\\\annotations_file.csv"
+IMG_DIR_TRAINING: ""
+IMG_DIR_VALIDATION: ""
+
+ANNOTATIONS_FILE_TRAINING: ""
+ANNOTATIONS_FILE_VALIDATION: ""
+
+
+VALIDATION_RESULTS_DIR: ""
 
 # model hyperparameters
 NUM_EPOCHS: 30
@@ -9,4 +15,4 @@ BATCH_SIZE: 16
 LEARNING_RATE: 0.001
 
 #output
-RESULTS_DIR: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\Classification and Localization\\\\Results"
+RESULTS_DIR: ""
