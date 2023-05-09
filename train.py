@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
             outputs = model(inputs)
             loss = criterion(outputs, targets)
-
+            print(f"Loss: {loss}")
             loss.backward()
             optimizer.step()
 

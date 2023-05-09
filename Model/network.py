@@ -19,7 +19,7 @@ class myNetwork(nn.Module):
         return x
 
 
-class ResNet(nn.Module):
+class ResNet():
     def __init__(self, feature_extract):
         self.model = models.resnet18(pretrained=True)
         self.__set_parameter_requires_grad(feature_extract)
