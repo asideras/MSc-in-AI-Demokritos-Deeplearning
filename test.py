@@ -28,16 +28,16 @@ if __name__ == '__main__':
 
     outputs = []
     with torch.no_grad():
-        for inputs, targets in test_dataloader:
+        for ids, inputs, targets in test_dataloader:
             inputs.to(device)
             output = model(inputs)
             output = output.cpu()
-            temp_list = [row.tolist() for row in output]
+            temp_list = [[i] + row.tolist() for i, row in zip(ids, output)]
 
             for sample in temp_list:
                 outputs.append(sample)
 
-    header = ["x_min", "y_min", "x_max", "y_max"]
+    header = ["id","x_min", "y_min", "x_max", "y_max"]
     csv_file = f'{RESULTS_DIR}/validation_results.csv'
     with open(csv_file, "w", newline="") as file:
         writer = csv.writer(file)

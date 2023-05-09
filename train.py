@@ -11,26 +11,26 @@ import csv
 from Model.Losses import L2Loss
 
 
-def sample_outputs():
+def sample_outputs(training_data):
     samples_dataloader = DataLoader(training_data, batch_size=BATCH_SIZE, shuffle=False)
     with open(f'{RESULTS_DIR}\\training_samples.csv', mode='w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(['x_min', 'y_min', 'x_max', 'y_max'])
-
+        writer.writerow(['id','x_min', 'y_min', 'x_max', 'y_max'])
+        res = []
         with torch.no_grad():
             for batch_idx, batch_data in enumerate(samples_dataloader):
                 if batch_idx == 3:
                     break
 
-                inputs, _ = batch_data
+                ids , inputs, _ = batch_data
                 inputs.to(device)
+                output = model(inputs)
+                output = output.cpu()
+                temp_list = [[i] + row.tolist() for i, row in zip(ids, output)]
 
-                outputs = model(inputs)
-
-                for output in outputs:
-                    x_min, y_min, x_max, y_max = output.tolist()
-                    writer.writerow([x_min, y_min, x_max, y_max])
-
+                for sample in temp_list:
+                    res.append(sample)
+            writer.writerows(res)
 
 if __name__ == '__main__':
 
@@ -69,7 +69,7 @@ if __name__ == '__main__':
 
         model.train()
 
-        for inputs, targets in train_dataloader:
+        for _, inputs, targets in train_dataloader:
             inputs.to(device)
             targets.to(device)
 
@@ -81,5 +81,5 @@ if __name__ == '__main__':
             loss.backward()
             optimizer.step()
 
-    sample_outputs()
+    sample_outputs(training_data)
     torch.save(model.state_dict(), 'model.pth')

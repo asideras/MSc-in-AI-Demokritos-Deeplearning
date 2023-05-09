@@ -24,4 +24,4 @@ class Data_loader(Dataset):
             image = self.transform(image)
         target = torch.tensor(self.img_labels.iloc[idx, 6:])
 
-        return image, target.float()
+        return id, image, target.float()
