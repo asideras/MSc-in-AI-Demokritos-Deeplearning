@@ -29,6 +29,7 @@ if __name__ == '__main__':
     outputs = []
     with torch.no_grad():
         for ids, inputs, targets in test_dataloader:
+            model.eval()
             inputs.to(device)
             output = model(inputs)
             output = output.cpu()

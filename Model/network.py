@@ -20,8 +20,11 @@ class myNetwork(nn.Module):
 
 
 class ResNet():
-    def __init__(self, feature_extract):
-        self.model = models.resnet18(pretrained=True)
+    def __init__(self, feature_extract,num_of_layers=18):
+        if num_of_layers == 18:
+            self.model = models.resnet18(pretrained=True)
+        else:
+            self.model = models.resnet50(pretrained=True)
         self.__set_parameter_requires_grad(feature_extract)
         self.model.fc = nn.Linear(512, 4)
 
