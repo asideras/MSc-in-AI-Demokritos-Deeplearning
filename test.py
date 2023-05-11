@@ -25,7 +25,7 @@ if __name__ == '__main__':
     testing_data = Data_loader(annotations_file=ANNOTATIONS_FILE, img_dir=IMG_DIR,
                                transform=transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]))
     test_dataloader = DataLoader(testing_data, batch_size=BATCH_SIZE, shuffle=False)
-
+    print(f"Validation set size: {len(testing_data)}")
     outputs = []
     with torch.no_grad():
         for ids, inputs, targets in test_dataloader:

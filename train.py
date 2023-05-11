@@ -13,7 +13,7 @@ from Model.Losses import L2Loss
 
 def sample_outputs(training_data):
     samples_dataloader = DataLoader(training_data, batch_size=BATCH_SIZE, shuffle=False)
-    with open(f'{RESULTS_DIR}\\training_samples.csv', mode='w', newline='') as file:
+    with open('training_samples.csv', mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['id','x_min', 'y_min', 'x_max', 'y_max'])
         res = []
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     training_data = Data_loader(annotations_file=ANNOTATIONS_FILE, img_dir=IMG_DIR,
                                 transform=transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]))
     train_dataloader = DataLoader(training_data, batch_size=BATCH_SIZE, shuffle=True)
-
+    print(f"Training set size: {len(training_data)}")
     for epoch in range(NUM_EPOCHS):
         print('Epoch {}/{}'.format(epoch + 1, NUM_EPOCHS))
         print('-' * 10)

@@ -7,7 +7,7 @@ from torchvision.io import read_image
 
 class Data_loader(Dataset):
     def __init__(self, annotations_file, img_dir, transform=None):
-        self.img_labels = pd.read_csv(annotations_file, dtype={'id': str}).head(112)
+        self.img_labels = pd.read_csv(annotations_file, dtype={'id': str})
         self.img_dir = img_dir
         self.transform = transform
 

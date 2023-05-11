@@ -15,4 +15,4 @@ BATCH_SIZE: 16
 LEARNING_RATE: 0.001
 
 #output
-RESULTS_DIR: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\DeepFillv2_Pytorch"
+RESULTS_DIR: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\Classification and Localization\\\\Results"

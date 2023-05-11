@@ -10,7 +10,7 @@ def iou():
     with open('../config.yaml', 'r') as file:
         data = yaml.safe_load(file)
 
-    annotations_file = data['ANNOTATIONS_FILE']
+    annotations_file = data['ANNOTATIONS_FILE_VALIDATION']
     results_file = f"{data['RESULTS_DIR']}\\COLAB_RESULTS.csv"
 
     annotations = pd.read_csv(annotations_file)
