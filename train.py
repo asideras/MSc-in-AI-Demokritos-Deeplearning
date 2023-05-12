@@ -1,6 +1,7 @@
 import torch
 import yaml
 from torch import nn
+from torch.nn import MSELoss
 from torch.utils.data import DataLoader
 from torchvision import transforms
 import torch.optim as optim
@@ -8,7 +9,7 @@ from Model.network import ResNet
 from Model.network import myNetwork
 from Model.data_loader import Data_loader
 import csv
-from Model.Losses import L2Loss
+from Model.Losses import IoCLoss
 
 
 def sample_outputs(training_data):
@@ -44,7 +45,9 @@ if __name__ == '__main__':
     LEARNING_RATE = data['LEARNING_RATE']
     RESULTS_DIR = data['RESULTS_DIR']
 
-    criterion = L2Loss()
+    criterion_mse = MSELoss()
+    criterion_ioc = IoCLoss()
+    criterion = criterion_mse + 1000*criterion_ioc
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using {device} device")

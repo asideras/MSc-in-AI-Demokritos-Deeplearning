@@ -19,7 +19,7 @@ with open('../config.yaml', 'r') as file:
 
 input_path = data['IMG_DIR_VALIDATION']
 results_dir = data['RESULTS_DIR']
-results = pd.read_csv(f"{results_dir}\\validation_results.csv")
+results = pd.read_csv(f"{results_dir}\\training_samples.csv")
 
 counter = 1
 for index, row in results.iterrows():
