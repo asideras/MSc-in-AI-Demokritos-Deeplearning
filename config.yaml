@@ -1,18 +1,17 @@
 # data loading
+IMG_DIR: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\Classification and Localization\\\\Data\\\\inpainted"
+ANNOTATIONS_FILE: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\Classification and Localization\\\\Data\\\\annotations_file.csv"
 
-IMG_DIR_TRAINING: ""
-IMG_DIR_VALIDATION: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\DeepFillv2_Pytorch\\\\inpainted_validation"
-
-ANNOTATIONS_FILE_TRAINING: ""
-ANNOTATIONS_FILE_VALIDATION: ""
-
-
-VALIDATION_RESULTS_DIR: ""
+TRAIN_VAL_TEST_SPLIT:
+  num_training_samples: 500
+  num_validation_samples: 100
+  num_testing_samples: 100
 
 # model hyperparameters
-NUM_EPOCHS: 30
+NUM_EPOCHS: 20
 BATCH_SIZE: 16
 LEARNING_RATE: 0.001
 
-#output
+# output
 RESULTS_DIR: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\Classification and Localization\\\\Results"
+CHECKPOINT_PATH: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\Classification and Localization\\\\Model Checkpoint\\\\model.pt"

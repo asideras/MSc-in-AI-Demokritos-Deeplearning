@@ -2,7 +2,7 @@ import torch
 import yaml
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from Model.data_loader import Data_loader
+from Model.data_loader import InpaintedDataset
 from Model.network import ResNet
 import csv
 
@@ -13,23 +13,24 @@ if __name__ == '__main__':
 
     ANNOTATIONS_FILE = data['ANNOTATIONS_FILE_VALIDATION']
     IMG_DIR = data['IMG_DIR_VALIDATION']
-    RESULTS_DIR = data['VALIDATION_RESULTS_DIR']
+    RESULTS_DIR = data['RESULTS_DIR']
 
     BATCH_SIZE = data['BATCH_SIZE']
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     resnet = ResNet(feature_extract=False)
     model = resnet.model
-    model.load_state_dict(torch.load('model.pth', map_location=device))
+    #model.load_state_dict(torch.load('model.pth', map_location=device))
 
-    testing_data = Data_loader(annotations_file=ANNOTATIONS_FILE, img_dir=IMG_DIR,
-                               transform=transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]))
+    testing_data = InpaintedDataset(annotations_file=ANNOTATIONS_FILE, img_dir=IMG_DIR,
+                               transform=transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]) ,train_mode=False)
     test_dataloader = DataLoader(testing_data, batch_size=BATCH_SIZE, shuffle=False)
     print(f"Validation set size: {len(testing_data)}")
     outputs = []
     with torch.no_grad():
+        model.eval()
         for ids, inputs, targets in test_dataloader:
-            model.eval()
+
             inputs.to(device)
             output = model(inputs)
             output = output.cpu()

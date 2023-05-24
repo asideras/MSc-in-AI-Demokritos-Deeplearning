@@ -17,9 +17,11 @@ def draw_bbox(image_path, x_min, y_min, x_max, y_max):
 with open('../config.yaml', 'r') as file:
     data = yaml.safe_load(file)
 
-input_path = data['IMG_DIR_VALIDATION']
+input_path = data['IMG_DIR']
 results_dir = data['RESULTS_DIR']
-results = pd.read_csv(f"{results_dir}\\training_samples.csv")
+results = pd.read_csv(f"{results_dir}\\training_results.csv")
+#results = pd.read_csv("C:\\Users\\ANDRE\\OneDrive\\Desktop\\Andreas_Sideras\\Demokritos\\Msc in AI\\2nd Semester\\Deep Learning\\Classification and Localization of Inpainted Regions\\Classification and Localization\\Data\\annotations_file.csv")
+
 
 counter = 1
 for index, row in results.iterrows():

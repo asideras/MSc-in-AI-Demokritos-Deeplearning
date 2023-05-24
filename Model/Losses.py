@@ -1,5 +1,6 @@
 import torch
 from torch import nn
+from torch.nn import MSELoss
 
 
 class L2Loss(nn.Module):
@@ -45,8 +46,14 @@ class IoCLoss(nn.Module):
         return torch.mean(iou)
 
 
-# bboxes1 = torch.tensor([[0, 0, 5, 5]])
-# bboxes2 = torch.tensor([[10, 10, 15, 15]])
+# bboxes1 = torch.tensor([[10,10, 15, 15],[10,10,60,70]]).float()
+# bboxes2 = torch.tensor([[20, 20, 30, 30],[100,100, 150, 150]]).float()
 #
-# criterion = IoC()
-# print(criterion(bboxes1, bboxes2))
+# criterion1 = L2Loss()
+# print("Mean L2 distance: ",criterion1(bboxes1, bboxes2))
+#
+# criterion2 = MSELoss()
+# print("MSELoss: ",criterion2(bboxes1, bboxes2))
+#
+# criterion3 = IoCLoss()
+# print("Mean IoC loss: ",criterion3(bboxes1,bboxes2))
