@@ -4,7 +4,7 @@ import os
 import numpy as np
 import torch
 import yaml
-from torch.nn import MSELoss
+from torchvision.ops import generalized_box_iou_loss
 from torch.utils.data import DataLoader
 from torchvision import transforms
 import torch.optim as optim
@@ -44,7 +44,9 @@ if __name__ == '__main__':
     with open('config.yaml', 'r') as file:
         data = yaml.safe_load(file)
 
-    IMG_DIR = data['IMG_DIR']
+    IMG_DIR_INPAINTED = data['IMG_DIR_INPAINTED']
+    IMG_DIR_ORIGINAL = data['IMG_DIR_ORIGINAL']
+
     ANNOTATIONS_FILE = data['ANNOTATIONS_FILE']
     RESULTS_DIR = data['RESULTS_DIR']
 
@@ -60,7 +62,8 @@ if __name__ == '__main__':
     if args.load_checkpoint:
         checkpoint = torch.load(CHECKPOINT_PATH)
 
-    criterion = MSELoss()
+    criterion = IoCLoss()
+
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using {device} device")
@@ -83,7 +86,8 @@ if __name__ == '__main__':
     #         print(name)
 
     training_data = InpaintedDataset(annotations_file=ANNOTATIONS_FILE,
-                                     img_dir=IMG_DIR,
+                                     img_dir_inpainted=IMG_DIR_INPAINTED,
+                                     img_dir_original=IMG_DIR_ORIGINAL,
                                      transform=transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
                                      samples_type='Train',
                                      num_training_samples=NUM_TRAINING_SAMPLES,
@@ -94,7 +98,8 @@ if __name__ == '__main__':
     print(f"Training set size: {len(training_data)}")
 
     validation_data = InpaintedDataset(annotations_file=ANNOTATIONS_FILE,
-                                       img_dir=IMG_DIR,
+                                       img_dir_inpainted=IMG_DIR_INPAINTED,
+                                       img_dir_original=IMG_DIR_ORIGINAL,
                                        transform=transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
                                        samples_type='Validation',
                                        num_training_samples=NUM_TRAINING_SAMPLES,
@@ -105,7 +110,8 @@ if __name__ == '__main__':
     print(f"Validation set size: {len(validation_data)}")
 
     test_data = InpaintedDataset(annotations_file=ANNOTATIONS_FILE,
-                                 img_dir=IMG_DIR,
+                                 img_dir_inpainted=IMG_DIR_INPAINTED,
+                                 img_dir_original=IMG_DIR_ORIGINAL,
                                  transform=transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
                                  samples_type='Test',
                                  num_training_samples=NUM_TRAINING_SAMPLES,
@@ -137,7 +143,7 @@ if __name__ == '__main__':
             optimizer.zero_grad()
 
             outputs = model(inputs)
-            loss = criterion(outputs, targets)
+            loss =  criterion(outputs,targets)
 
             avg_batch_loss_train.append(loss.item())
 
@@ -155,7 +161,7 @@ if __name__ == '__main__':
                 inputs.to(device)
                 targets.to(device)
                 outputs = model(inputs)
-                loss = criterion(outputs, targets)
+                loss =  criterion(outputs,targets)
                 avg_batch_loss_val.append(loss.item())
             mean_val_loss = np.mean(avg_batch_loss_val)
             print(f"Mean Validation loss : {mean_val_loss}")

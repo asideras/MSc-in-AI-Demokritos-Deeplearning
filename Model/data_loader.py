@@ -7,7 +7,7 @@ from torchvision.io import read_image
 
 
 class InpaintedDataset(Dataset):
-    def __init__(self, annotations_file, img_dir, transform=None, samples_type=None, num_training_samples=None,
+    def __init__(self, annotations_file, img_dir_inpainted,img_dir_original, transform=None, samples_type=None, num_training_samples=None,
                  num_validation_samples=None, num_testing_samples=None):        
 
         self.img_labels = pd.read_csv(annotations_file, dtype={'id': str})
@@ -19,16 +19,26 @@ class InpaintedDataset(Dataset):
         elif samples_type == "Test":
             self.img_labels = self.img_labels.iloc[num_training_samples+num_validation_samples:num_training_samples + num_validation_samples+num_testing_samples,:]
 
-        self.img_dir = img_dir
+        self.img_dir_inpainted = img_dir_inpainted
+        self.img_dir_original = img_dir_original
+
         self.transform = transform
 
     def __len__(self):
         return len(self.img_labels)
 
     def __getitem__(self, idx):
-        id = self.img_labels.iloc[idx, 0].lstrip('0')
-        filename = f"{id}_second_out.jpg"
-        img_path = os.path.join(self.img_dir, filename)
+
+        fake_label = self.img_labels.iloc[idx,1]
+        if fake_label :
+            id = self.img_labels.iloc[idx, 0].lstrip('0')
+            filename = f"{id}_second_out.jpg"
+            img_path = os.path.join(self.img_dir_inpainted, filename)
+        else:
+            id = self.img_labels.iloc[idx,0]
+            filename = f"Places365_val_{id}.jpg"
+            img_path = os.path.join(self.img_dir_original, filename)
+
         image = read_image(img_path).float()
 
         if self.transform:
