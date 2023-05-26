@@ -17,15 +17,19 @@ def draw_bbox(image_path, x_min, y_min, x_max, y_max):
 with open('../config.yaml', 'r') as file:
     data = yaml.safe_load(file)
 
-input_path = data['IMG_DIR']
+input_path = data['IMG_DIR_INPAINTED']
 results_dir = data['RESULTS_DIR']
-results = pd.read_csv(f"{results_dir}\\training_results.csv")
-#results = pd.read_csv("C:\\Users\\ANDRE\\OneDrive\\Desktop\\Andreas_Sideras\\Demokritos\\Msc in AI\\2nd Semester\\Deep Learning\\Classification and Localization of Inpainted Regions\\Classification and Localization\\Data\\annotations_file.csv")
+#results = pd.read_csv(f"{results_dir}\\test_results.csv")
+results = pd.read_csv("C:\\Users\\ANDRE\\OneDrive\\Desktop\\Andreas_Sideras\\Demokritos\\Msc in AI\\2nd Semester\\Deep Learning\\Classification and Localization of Inpainted Regions\\Classification and Localization\\Data\\anns_class_local.csv")
 
 
-counter = 1
+
 for index, row in results.iterrows():
-    img_path = f"{input_path}\\{counter}_second_out.jpg"
-    x_min, y_min, x_max, y_max = int(row['x_min']), int(row['y_min']), int(row['x_max']), int(row['y_max'])
-    draw_bbox(img_path, x_min, y_min, x_max, y_max)
-    counter += 1
+    id = str(int(row.id))
+    img_path = f"{input_path}\\{id}_second_out.jpg"
+    fake_label ,x_min, y_min, x_max, y_max = row['fake_label'], int(row['x_min']), int(row['y_min']), int(row['x_max']), int(row['y_max'])
+    if fake_label:
+       draw_bbox(img_path, x_min, y_min, x_max, y_max)
+    else:
+        print(f"Image with id: {id} does not contain artificial part")
+    print("---")

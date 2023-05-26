@@ -1,6 +1,7 @@
 import torch
 from torch import nn
-from torchvision import datasets, models, transforms
+from torchvision import  models
+from torchvision.models import ResNet18_Weights, ResNet50_Weights
 
 
 class myNetwork(nn.Module):
@@ -22,11 +23,13 @@ class myNetwork(nn.Module):
 class ResNet():
     def __init__(self, feature_extract,num_of_layers=18):
         if num_of_layers == 18:
-            self.model = models.resnet18(pretrained=True)
+            self.model = models.resnet18(weights=ResNet18_Weights.DEFAULT)
+            self.name = "ResNet 18"
         else:
-            self.model = models.resnet50(pretrained=True)
+            self.model = models.resnet50(weights=ResNet50_Weights.DEFAULT)
+            self.name = "ResNet 50"
         self.__set_parameter_requires_grad(feature_extract)
-        self.model.fc = nn.Linear(512, 4)
+        self.model.fc = nn.Linear(512, 5)
 
     def __set_parameter_requires_grad(self, feature_extracting):
         if feature_extracting:

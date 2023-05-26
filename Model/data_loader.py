@@ -43,7 +43,7 @@ class InpaintedDataset(Dataset):
 
         if self.transform:
             image = self.transform(image)
-        target = torch.tensor(self.img_labels.iloc[idx, 2:])
+        target = torch.tensor(self.img_labels.iloc[idx, 1:])
 
         return id, image, target.float()
 
