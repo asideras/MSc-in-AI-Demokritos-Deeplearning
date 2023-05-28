@@ -6,13 +6,13 @@ IMG_DIR_ORIGINAL:  "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sider
 ANNOTATIONS_FILE: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\Classification and Localization\\\\Data\\\\anns_class_local.csv"
 
 TRAIN_VAL_TEST_SPLIT:
-  num_training_samples:
-  num_validation_samples: 3
-  num_testing_samples: 3
+  num_training_samples: 1000
+  num_validation_samples: 150
+  num_testing_samples: 150
 
 # model hyperparameters
-NUM_EPOCHS: 5
-BATCH_SIZE: 16
+NUM_EPOCHS: 25
+BATCH_SIZE: 64
 LEARNING_RATE: 0.001
 
 # output

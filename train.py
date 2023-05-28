@@ -30,8 +30,7 @@ def calculate_iou(box1, box2):
     y_max_intersection = min(y_max1, y_max2)
 
     # Calculate the area of the intersection rectangle
-    intersection_area = max(0, x_max_intersection - x_min_intersection + 1) * max(0,
-                                                                                  y_max_intersection - y_min_intersection + 1)
+    intersection_area = max(0, x_max_intersection - x_min_intersection + 1) * max(0, y_max_intersection - y_min_intersection + 1)
 
     # Calculate the areas of the bounding boxes
     box1_area = (x_max1 - x_min1 + 1) * (y_max1 - y_min1 + 1)
@@ -108,6 +107,8 @@ def sample_outputs(model, data_loader, file):
 
                 inputs.to(device)
                 output = model(inputs)
+                classification_neuron = torch.sigmoid(output[:,0])
+                output = torch.cat((classification_neuron.unsqueeze(1), output[:,1:]), dim =1)
                 output = output.cpu()
                 temp_list = [[i] + row.tolist() for i, row in zip(ids, output)]
 
@@ -144,7 +145,8 @@ if __name__ == '__main__':
     if args.load_checkpoint:
         checkpoint = torch.load(CHECKPOINT_PATH)
 
-    criterion = nn.MSELoss()
+    criterion1 = nn.MSELoss()
+    criterion2 = nn.BCEWithLogitsLoss()
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using {device} device\n")
@@ -232,7 +234,7 @@ if __name__ == '__main__':
             optimizer.zero_grad()
 
             outputs = model(inputs)
-            loss = criterion(outputs, targets)
+            loss = criterion1(outputs[:,1:], targets[:,1:]) + criterion2(outputs[:,0], targets[:,0])
 
             avg_batch_loss_train.append(loss.item())
 
@@ -250,7 +252,7 @@ if __name__ == '__main__':
                 inputs.to(device)
                 targets.to(device)
                 outputs = model(inputs)
-                loss = criterion(outputs, targets)
+                loss = criterion1(outputs[:,1:], targets[:,1:]) + criterion2(outputs[:,0], targets[:,0])
                 avg_batch_loss_val.append(loss.item())
             mean_val_loss = np.mean(avg_batch_loss_val)
             print(f"Mean Validation loss : {mean_val_loss}")
@@ -264,6 +266,7 @@ if __name__ == '__main__':
                     'optimizer_state_dict': optimizer.state_dict(),
                     'loss': mean_val_loss,
                 }, CHECKPOINT_PATH)
+
     end_time = time.time()
 
     # Calculate the running time
@@ -299,7 +302,7 @@ if __name__ == '__main__':
 
     # Add labels and title
     plt.xlabel('Epochs')
-    plt.ylabel(f'Accuracy (MSE Loss)')
+    plt.ylabel(f'Loss')
     plt.title('Training and Validation Accuracies')
 
     # Add legend
