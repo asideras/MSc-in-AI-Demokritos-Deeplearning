@@ -1,10 +1,8 @@
 import torch
 import os
 import pandas as pd
-import yaml
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 from torchvision.io import read_image
-
 
 class InpaintedDataset(Dataset):
     def __init__(self, annotations_file, img_dir_inpainted,img_dir_original, transform=None, samples_type=None, num_training_samples=None,
@@ -40,6 +38,11 @@ class InpaintedDataset(Dataset):
             img_path = os.path.join(self.img_dir_original, filename)
 
         image = read_image(img_path).float()
+
+        if image.size(0) == 1:  # Check if image is one-channel
+            print(f"Image with id {id}  has size {image.size()}!!")
+            image = image.repeat(3,1,1)
+            print(f"Converted to: {image.size()}!!")
 
         if self.transform:
             image = self.transform(image)

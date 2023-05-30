@@ -310,13 +310,13 @@ if __name__ == '__main__':
     x = range(1, length + 1)
 
     # Plot the training and validation accuracies
-    plt.plot(x, training_accuracy, label='Training Accuracy')
-    plt.plot(x, validation_accuracy, label='Validation Accuracy')
+    plt.plot(x, training_accuracy, label='Training Loss')
+    plt.plot(x, validation_accuracy, label='Validation Loss')
 
     # Add labels and title
     plt.xlabel('Epochs')
     plt.ylabel(f'Loss')
-    plt.title('Training and Validation Accuracies')
+    plt.title('Training and Validation Losses')
 
     # Add legend
     plt.legend()
