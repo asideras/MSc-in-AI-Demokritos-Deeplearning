@@ -86,7 +86,7 @@ def accuracy(ground_truth_df, test_preds_df):
     merged_df['IoU'] = iou_scores
 
     contains_artificial = merged_df[merged_df['fake_label_ground_truth'] == 1]
-
+    contains_artificial = contains_artificial[contains_artificial['fake_label_pred'] > threshold]
     # Print the dataframe with the IoU scores
     print(f"Mean IoU: {contains_artificial.IoU.mean()} ")
 
@@ -141,12 +141,16 @@ if __name__ == '__main__':
     NUM_VALIDATION_SAMPLES = data['TRAIN_VAL_TEST_SPLIT']['num_validation_samples']
     NUM_TESTING_SAMPLES = data['TRAIN_VAL_TEST_SPLIT']['num_testing_samples']
 
+    ALPHA = data ['ALPHA']
+    BETA = data['BETA']
+
     CHECKPOINT_PATH = data['CHECKPOINT_PATH']
     if args.load_checkpoint:
         checkpoint = torch.load(CHECKPOINT_PATH)
 
-    criterion1 = nn.MSELoss()
-    criterion2 = nn.BCEWithLogitsLoss()
+    criterion1 = nn.BCEWithLogitsLoss()
+    criterion2 = nn.MSELoss()
+
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using {device} device\n")
@@ -234,7 +238,11 @@ if __name__ == '__main__':
             optimizer.zero_grad()
 
             outputs = model(inputs)
-            loss = criterion1(outputs[:,1:], targets[:,1:]) + criterion2(outputs[:,0], targets[:,0])
+
+            bce_loss = criterion1(outputs[:,0], targets[:,0])
+            loc_loss = criterion2(outputs[:,1:], targets[:,1:])
+
+            loss = ALPHA*bce_loss + BETA*loc_loss
 
             avg_batch_loss_train.append(loss.item())
 
@@ -251,8 +259,13 @@ if __name__ == '__main__':
             for _, inputs, targets in validation_dataloader:
                 inputs.to(device)
                 targets.to(device)
+
                 outputs = model(inputs)
-                loss = criterion1(outputs[:,1:], targets[:,1:]) + criterion2(outputs[:,0], targets[:,0])
+
+                bce_loss = criterion1(outputs[:, 0], targets[:, 0])
+                loc_loss = criterion2(outputs[:, 1:], targets[:, 1:])
+                loss = ALPHA*bce_loss + BETA*loc_loss
+
                 avg_batch_loss_val.append(loss.item())
             mean_val_loss = np.mean(avg_batch_loss_val)
             print(f"Mean Validation loss : {mean_val_loss}")
@@ -316,6 +329,6 @@ if __name__ == '__main__':
     print("-"*10)
     print("\nVALIDATION SET METRICS:")
     accuracy(pd.read_csv(ANNOTATIONS_FILE), pd.read_csv(f"{RESULTS_DIR}\\validation_results.csv"))
-    print("-" * 10)
-    print("\nTEST SET METRICS:")
-    accuracy(pd.read_csv(ANNOTATIONS_FILE), pd.read_csv(f"{RESULTS_DIR}\\test_results.csv"))
+    # print("-" * 10)
+    # print("\nTEST SET METRICS:")
+    # accuracy(pd.read_csv(ANNOTATIONS_FILE), pd.read_csv(f"{RESULTS_DIR}\\test_results.csv"))
