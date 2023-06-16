@@ -3,7 +3,8 @@ import os
 import pandas as pd
 import torch
 import yaml
-# from torchvision.ops import generalized_box_iou_loss
+from torchvision.ops import generalized_box_iou_loss
+from Model.Losses import L2Loss
 from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import transforms
@@ -12,12 +13,11 @@ from Model.network import ResNet
 from Model.data_loader import InpaintedDataset
 import csv
 import math
-from Model.Losses import IoCLoss
 import matplotlib.pyplot as plt
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, roc_auc_score, roc_curve
 import numpy as np
 import time
-
+import seaborn as sns
 
 def calculate_iou(box1, box2):
     x_min1, y_min1, x_max1, y_max1 = box1
@@ -65,16 +65,40 @@ def accuracy(ground_truth_df, test_preds_df):
     # F1 score
     f1 = f1_score(actual_labels, predicted_labels)
 
+    # Confusion matrix
+    cm = confusion_matrix(actual_labels, predicted_labels)
+
+    # ROC AUC
+    roc_auc = roc_auc_score(actual_labels, predicted_values)
+
     print("Accuracy:", accuracy)
     print("Precision:", precision)
     print("Recall:", recall)
     print("F1 Score:", f1)
+    print("Confusion Matrix:")
+    print(cm)
+    print("ROC AUC:", roc_auc)
+
+    # Plotting the confusion matrix
+    labels = ['Real', 'Fake']
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=labels, yticklabels=labels)
+    plt.xlabel("Predicted")
+    plt.ylabel("Actual")
+    plt.title("Confusion Matrix")
+    plt.show()
+
+    # Plotting the ROC AUC curve
+    fpr, tpr, thresholds = roc_curve(actual_labels, predicted_values)
+    plt.plot(fpr, tpr)
+    plt.plot([0, 1], [0, 1], linestyle='--')
+    plt.xlabel("False Positive Rate")
+    plt.ylabel("True Positive Rate")
+    plt.title("ROC AUC Curve")
+    plt.show()
 
     ground_truth_boxes = merged_df[
         ['x_min_ground_truth', 'y_min_ground_truth', 'x_max_ground_truth', 'y_max_ground_truth']]
     predicted_boxes = merged_df[['x_min_pred', 'y_min_pred', 'x_max_pred', 'y_max_pred']]
-
-    # Define a function to calculate the IoU between two bounding boxes
 
     # Calculate IoU for each pair of ground truth and predicted bounding boxes
     iou_scores = []
@@ -107,8 +131,8 @@ def sample_outputs(model, data_loader, file):
 
                 inputs.to(device)
                 output = model(inputs)
-                classification_neuron = torch.sigmoid(output[:,0])
-                output = torch.cat((classification_neuron.unsqueeze(1), output[:,1:]), dim =1)
+                classification_neuron = torch.sigmoid(output[:, 0])
+                output = torch.cat((classification_neuron.unsqueeze(1), output[:, 1:]), dim=1)
                 output = output.cpu()
                 temp_list = [[i] + row.tolist() for i, row in zip(ids, output)]
 
@@ -141,16 +165,24 @@ if __name__ == '__main__':
     NUM_VALIDATION_SAMPLES = data['TRAIN_VAL_TEST_SPLIT']['num_validation_samples']
     NUM_TESTING_SAMPLES = data['TRAIN_VAL_TEST_SPLIT']['num_testing_samples']
 
-    ALPHA = data ['ALPHA']
+    ALPHA = data['ALPHA']
     BETA = data['BETA']
+
+    LOCALIZATION_LOSS = data['LOCALIZATION_LOSS']
 
     CHECKPOINT_PATH = data['CHECKPOINT_PATH']
     if args.load_checkpoint:
         checkpoint = torch.load(CHECKPOINT_PATH)
 
-    criterion1 = nn.BCEWithLogitsLoss()
-    criterion2 = nn.MSELoss()
+    localization_loss_options = {"MSE_lOSS":nn.MSELoss(),
+                                 "SMOOTH_L1_LOSS":nn.SmoothL1Loss(),
+                                 "GIoU":generalized_box_iou_loss,
+                                 "L2_LOSS": L2Loss()}
 
+    criterion1 = nn.BCEWithLogitsLoss()
+    criterion2 = localization_loss_options[LOCALIZATION_LOSS]
+
+    print(f"localization loss: {criterion2}")
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using {device} device\n")
@@ -239,10 +271,14 @@ if __name__ == '__main__':
 
             outputs = model(inputs)
 
-            bce_loss = criterion1(outputs[:,0], targets[:,0])
-            loc_loss = criterion2(outputs[:,1:], targets[:,1:])
+            bce_loss = criterion1(outputs[:, 0], targets[:, 0])
+            if criterion2 == generalized_box_iou_loss:
+                loc_loss = criterion2(outputs[:, 1:], targets[:, 1:], reduction = "mean")
+            else:
+                loc_loss = criterion2(outputs[:, 1:], targets[:, 1:])
 
-            loss = ALPHA*bce_loss + BETA*loc_loss
+            loss = ALPHA * bce_loss + BETA * loc_loss
+
 
             avg_batch_loss_train.append(loss.item())
 
@@ -263,8 +299,11 @@ if __name__ == '__main__':
                 outputs = model(inputs)
 
                 bce_loss = criterion1(outputs[:, 0], targets[:, 0])
-                loc_loss = criterion2(outputs[:, 1:], targets[:, 1:])
-                loss = ALPHA*bce_loss + BETA*loc_loss
+                if criterion2 == generalized_box_iou_loss:
+                    loc_loss = criterion2(outputs[:, 1:], targets[:, 1:], reduction="mean")
+                else:
+                    loc_loss = criterion2(outputs[:, 1:], targets[:, 1:])
+                loss = ALPHA * bce_loss + BETA * loc_loss
 
                 avg_batch_loss_val.append(loss.item())
             mean_val_loss = np.mean(avg_batch_loss_val)
@@ -291,7 +330,6 @@ if __name__ == '__main__':
 
     # Print the running time
     print("Training Time: {} hours, {} minutes, {} seconds\n".format(hours, minutes, seconds))
-
 
     training_results_file = os.path.join(RESULTS_DIR, "training_results.csv")
     validation_results_file = os.path.join(RESULTS_DIR, "validation_results.csv")
@@ -326,7 +364,7 @@ if __name__ == '__main__':
 
     print("\nTRAINING SET METRICS:")
     accuracy(pd.read_csv(ANNOTATIONS_FILE), pd.read_csv(f"{RESULTS_DIR}\\training_results.csv"))
-    print("-"*10)
+    print("-" * 10)
     print("\nVALIDATION SET METRICS:")
     accuracy(pd.read_csv(ANNOTATIONS_FILE), pd.read_csv(f"{RESULTS_DIR}\\validation_results.csv"))
     # print("-" * 10)

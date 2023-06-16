@@ -1,22 +1,41 @@
 import torch
 from torch import nn
 from torchvision import  models
-from torchvision.models import ResNet18_Weights, ResNet50_Weights
+from torchvision.models import ResNet18_Weights, ResNet50_Weights, VGG11_Weights, AlexNet_Weights
 
 
 class myNetwork(nn.Module):
     def __init__(self):
-        super().__init__()
-        self.fc1 = nn.Linear(784, 128)
-        self.fc2 = nn.Linear(128, 64)
-        self.fc3 = nn.Linear(64, 10)
+        super(myNetwork, self).__init__()
+        self.conv_layers = nn.Sequential(
+            nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+            nn.Conv2d(128, 256, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(256, 128, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=4, stride=2),
+            nn.Conv2d(128, 64, kernel_size=3, stride=1, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=4, stride=2)
+        )
+
+
+        self.fc_layers = nn.Sequential(
+            nn.Linear(256 * 64 * 64, 4096),
+            nn.ReLU(inplace=True),
+            nn.Linear(4096, 4096),
+            nn.ReLU(inplace=True),
+            nn.Linear(4096, 5)
+        )
 
     def forward(self, x):
-        x = self.fc1(x)
-        x = nn.functional.relu(x)
-        x = self.fc2(x)
-        x = nn.functional.relu(x)
-        x = self.fc3(x)
+        x = self.conv_layers(x)
+        x = x.view(x.size(0), -1)
+        x = self.fc_layers(x)
         return x
 
 
@@ -36,4 +55,30 @@ class ResNet():
             for param in self.model.parameters():
                 param.requires_grad = False
 
+class VGG11():
+    def __init__(self):
+        self.model = models.vgg11(weights=VGG11_Weights.IMAGENET1K_V1)
+        in_features = self.model.classifier[-1].in_features
+        output = 5
+        new_output = nn.Linear(in_features,output)
+        self.model.classifier[-1] = new_output
 
+class ALEXNET():
+    def __init__(self):
+        self.model = models.alexnet(weights = AlexNet_Weights.IMAGENET1K_V1)
+        print(self.model)
+        in_features = self.model.classifier[-1].in_features
+        new_οutput = nn.Linear(in_features,5)
+        self.model.classifier[-1] = new_οutput
+        print(self.model)
+
+
+# input = torch.randn((1,3,256,256))
+# print(input.size())
+# model = myNetwork()
+# output = model(input)
+# print(output.size())
+#
+# params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+
+# print(f"Number of trainable parameters: {params}\n")

@@ -6,14 +6,23 @@ IMG_DIR_ORIGINAL:  "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sider
 ANNOTATIONS_FILE: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\Classification and Localization\\\\Data\\\\anns_class_local.csv"
 
 TRAIN_VAL_TEST_SPLIT:
-  num_training_samples: 1
-  num_validation_samples: 4000
-  num_testing_samples: 150
+  num_training_samples: 5000
+  num_validation_samples: 500
+  num_testing_samples: 500
+
+#model selection
+#OPTIONS: ResNet18,ResNet50, VGG11,ALEXNET
+MODEL: ResNet50
+
 
 # model hyperparameters
-NUM_EPOCHS: 1
-BATCH_SIZE: 256
+NUM_EPOCHS: 10
+BATCH_SIZE: 64
 LEARNING_RATE: 0.001
+
+#OPTIONS: MSE_lOSS, SMOOTH_L1_LOSS, GIoU, L2_LOSS
+LOCALIZATION_LOSS: "SMOOTH_L1_LOSS"
+
 ALPHA : 100
 BETA : 0.8
 
