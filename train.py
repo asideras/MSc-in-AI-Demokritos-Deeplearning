@@ -9,7 +9,7 @@ from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import transforms
 import torch.optim as optim
-from Model.network import ResNet
+from Model.network import ResNet, VGG11, ALEXNET
 from Model.data_loader import InpaintedDataset
 import csv
 import math
@@ -116,11 +116,14 @@ def accuracy(ground_truth_df, test_preds_df):
 
 
 def sample_outputs(model, data_loader, file):
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"Using {device} device\n")
     with open(file, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['id', 'fake_label', 'x_min', 'y_min', 'x_max', 'y_max'])
         res = []
         with torch.no_grad():
+            model.eval()
             for batch_idx, batch_data in enumerate(data_loader):
 
                 ids, inputs, _ = batch_data
@@ -171,6 +174,20 @@ if __name__ == '__main__':
     LOCALIZATION_LOSS = data['LOCALIZATION_LOSS']
 
     CHECKPOINT_PATH = data['CHECKPOINT_PATH']
+
+    MODEL = data['MODEL']
+
+    if MODEL == "ResNet18":
+        network = ResNet(feature_extract=False, num_of_layers=18)
+    elif MODEL == "ResNet50":
+        network = ResNet(feature_extract=False, num_of_layers=50)
+    elif MODEL == "VGG11" :
+        network = VGG11()
+    elif MODEL == "ALEXNET":
+        network = ALEXNET()
+    else:
+        raise ValueError("Wrong network option")
+
     if args.load_checkpoint:
         checkpoint = torch.load(CHECKPOINT_PATH)
 
@@ -178,6 +195,8 @@ if __name__ == '__main__':
                                  "SMOOTH_L1_LOSS":nn.SmoothL1Loss(),
                                  "GIoU":generalized_box_iou_loss,
                                  "L2_LOSS": L2Loss()}
+
+
 
     criterion1 = nn.BCEWithLogitsLoss()
     criterion2 = localization_loss_options[LOCALIZATION_LOSS]
@@ -187,7 +206,7 @@ if __name__ == '__main__':
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using {device} device\n")
 
-    network = ResNet(feature_extract=False)
+
 
     print(f"Using {network.name} model\n")
     model = network.model
@@ -234,18 +253,18 @@ if __name__ == '__main__':
     validation_dataloader = DataLoader(validation_data, batch_size=BATCH_SIZE, shuffle=False)
     print(f"Validation set size: {len(validation_data)}\n")
 
-    test_data = InpaintedDataset(annotations_file=ANNOTATIONS_FILE,
-                                 img_dir_inpainted=IMG_DIR_INPAINTED,
-                                 img_dir_original=IMG_DIR_ORIGINAL,
-                                 transform=transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
-                                 samples_type='Test',
-                                 num_training_samples=NUM_TRAINING_SAMPLES,
-                                 num_validation_samples=NUM_VALIDATION_SAMPLES,
-                                 num_testing_samples=NUM_TESTING_SAMPLES
-                                 )
-
-    test_dataloader = DataLoader(test_data, batch_size=BATCH_SIZE, shuffle=False)
-    print(f"Test set size: {len(test_data)}\n")
+    # test_data = InpaintedDataset(annotations_file=ANNOTATIONS_FILE,
+    #                              img_dir_inpainted=IMG_DIR_INPAINTED,
+    #                              img_dir_original=IMG_DIR_ORIGINAL,
+    #                              transform=transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+    #                              samples_type='Test',
+    #                              num_training_samples=NUM_TRAINING_SAMPLES,
+    #                              num_validation_samples=NUM_VALIDATION_SAMPLES,
+    #                              num_testing_samples=NUM_TESTING_SAMPLES
+    #                              )
+    #
+    # test_dataloader = DataLoader(test_data, batch_size=BATCH_SIZE, shuffle=False)
+    # print(f"Test set size: {len(test_data)}\n")
 
     training_accuracy = []
     validation_accuracy = []
@@ -312,11 +331,15 @@ if __name__ == '__main__':
 
             if min(validation_accuracy) == mean_val_loss and (epoch + 1) > 1:
                 # We found the best model until so far
+
+                print(f"New best model found! (based on validation set performance)")
+
                 torch.save({
                     'epoch': epoch,
                     'model_state_dict': model.state_dict(),
                     'optimizer_state_dict': optimizer.state_dict(),
                     'loss': mean_val_loss,
+                    'type' : network.name
                 }, CHECKPOINT_PATH)
 
     end_time = time.time()
@@ -339,7 +362,7 @@ if __name__ == '__main__':
 
     sample_outputs(model, train_dataloader, training_results_file)
     sample_outputs(model, validation_dataloader, validation_results_file)
-    sample_outputs(model, test_dataloader, test_results_file)
+    # sample_outputs(model, test_dataloader, test_results_file)
 
     # Get the length of the lists
     length = len(training_accuracy)
