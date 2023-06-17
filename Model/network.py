@@ -3,10 +3,15 @@ from torch import nn
 from torchvision import  models
 from torchvision.models import ResNet18_Weights, ResNet50_Weights, VGG11_Weights, AlexNet_Weights
 
-
-class myNetwork(nn.Module):
+class myNetwork():
     def __init__(self):
-        super(myNetwork, self).__init__()
+        self.model = Network()
+        self.name = "Network"
+
+class Network(nn.Module):
+    def __init__(self):
+        super(Network, self).__init__()
+
         self.conv_layers = nn.Sequential(
             nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1),
             nn.ReLU(inplace=True),

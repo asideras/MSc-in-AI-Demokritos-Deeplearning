@@ -9,15 +9,17 @@ from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import transforms
 import torch.optim as optim
-from Model.network import ResNet, VGG11, ALEXNET
+from Model.network import ResNet, VGG11, ALEXNET, myNetwork
 from Model.data_loader import InpaintedDataset
 import csv
 import math
 import matplotlib.pyplot as plt
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, roc_auc_score, roc_curve
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, roc_auc_score, \
+    roc_curve
 import numpy as np
 import time
 import seaborn as sns
+
 
 def calculate_iou(box1, box2):
     x_min1, y_min1, x_max1, y_max1 = box1
@@ -30,7 +32,8 @@ def calculate_iou(box1, box2):
     y_max_intersection = min(y_max1, y_max2)
 
     # Calculate the area of the intersection rectangle
-    intersection_area = max(0, x_max_intersection - x_min_intersection + 1) * max(0, y_max_intersection - y_min_intersection + 1)
+    intersection_area = max(0, x_max_intersection - x_min_intersection + 1) * max(0,
+                                                                                  y_max_intersection - y_min_intersection + 1)
 
     # Calculate the areas of the bounding boxes
     box1_area = (x_max1 - x_min1 + 1) * (y_max1 - y_min1 + 1)
@@ -181,22 +184,22 @@ if __name__ == '__main__':
         network = ResNet(feature_extract=False, num_of_layers=18)
     elif MODEL == "ResNet50":
         network = ResNet(feature_extract=False, num_of_layers=50)
-    elif MODEL == "VGG11" :
+    elif MODEL == "VGG11":
         network = VGG11()
     elif MODEL == "ALEXNET":
         network = ALEXNET()
+    elif MODEL == "myNetwork":
+        network = myNetwork()
     else:
         raise ValueError("Wrong network option")
 
     if args.load_checkpoint:
         checkpoint = torch.load(CHECKPOINT_PATH)
 
-    localization_loss_options = {"MSE_lOSS":nn.MSELoss(),
-                                 "SMOOTH_L1_LOSS":nn.SmoothL1Loss(),
-                                 "GIoU":generalized_box_iou_loss,
+    localization_loss_options = {"MSE_lOSS": nn.MSELoss(),
+                                 "SMOOTH_L1_LOSS": nn.SmoothL1Loss(),
+                                 "GIoU": generalized_box_iou_loss,
                                  "L2_LOSS": L2Loss()}
-
-
 
     criterion1 = nn.BCEWithLogitsLoss()
     criterion2 = localization_loss_options[LOCALIZATION_LOSS]
@@ -205,8 +208,6 @@ if __name__ == '__main__':
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using {device} device\n")
-
-
 
     print(f"Using {network.name} model\n")
     model = network.model
@@ -266,6 +267,9 @@ if __name__ == '__main__':
     # test_dataloader = DataLoader(test_data, batch_size=BATCH_SIZE, shuffle=False)
     # print(f"Test set size: {len(test_data)}\n")
 
+    assert len(set(training_data.img_labels.id.unique()).intersection(
+        validation_data.img_labels.id.unique())) == 0, "Something went wrong with the datasets. An image id is in both training and validation sets"
+
     training_accuracy = []
     validation_accuracy = []
     avg_batch_loss_train = []
@@ -292,12 +296,11 @@ if __name__ == '__main__':
 
             bce_loss = criterion1(outputs[:, 0], targets[:, 0])
             if criterion2 == generalized_box_iou_loss:
-                loc_loss = criterion2(outputs[:, 1:], targets[:, 1:], reduction = "mean")
+                loc_loss = criterion2(outputs[:, 1:], targets[:, 1:], reduction="mean")
             else:
                 loc_loss = criterion2(outputs[:, 1:], targets[:, 1:])
 
             loss = ALPHA * bce_loss + BETA * loc_loss
-
 
             avg_batch_loss_train.append(loss.item())
 
@@ -339,7 +342,7 @@ if __name__ == '__main__':
                     'model_state_dict': model.state_dict(),
                     'optimizer_state_dict': optimizer.state_dict(),
                     'loss': mean_val_loss,
-                    'type' : network.name
+                    'type': network.name
                 }, CHECKPOINT_PATH)
 
     end_time = time.time()
@@ -386,10 +389,17 @@ if __name__ == '__main__':
     plt.show()
 
     print("\nTRAINING SET METRICS:")
-    accuracy(pd.read_csv(ANNOTATIONS_FILE), pd.read_csv(f"{RESULTS_DIR}\\training_results.csv"))
+    try:
+        accuracy(pd.read_csv(ANNOTATIONS_FILE), pd.read_csv(f"{RESULTS_DIR}\\training_results.csv"))
+    except:
+        accuracy(pd.read_csv(ANNOTATIONS_FILE), pd.read_csv(f"{RESULTS_DIR}/training_results.csv"))
+
     print("-" * 10)
     print("\nVALIDATION SET METRICS:")
-    accuracy(pd.read_csv(ANNOTATIONS_FILE), pd.read_csv(f"{RESULTS_DIR}\\validation_results.csv"))
+    try:
+        accuracy(pd.read_csv(ANNOTATIONS_FILE), pd.read_csv(f"{RESULTS_DIR}\\validation_results.csv"))
+    except:
+        accuracy(pd.read_csv(ANNOTATIONS_FILE), pd.read_csv(f"{RESULTS_DIR}/validation_results.csv"))
     # print("-" * 10)
     # print("\nTEST SET METRICS:")
     # accuracy(pd.read_csv(ANNOTATIONS_FILE), pd.read_csv(f"{RESULTS_DIR}\\test_results.csv"))

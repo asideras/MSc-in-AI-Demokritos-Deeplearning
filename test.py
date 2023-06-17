@@ -30,6 +30,8 @@ if __name__ == '__main__':
 
     model_type = checkpoint['type']
 
+    print(f"Final model is a : {model_type}")
+
     if model_type == "ResNet18":
         network = ResNet(feature_extract=False, num_of_layers=18)
     elif model_type == "ResNet50":
@@ -61,4 +63,7 @@ if __name__ == '__main__':
 
     sample_outputs(model, test_dataloader, test_results_file)
     print("\nTEST SET METRICS:")
-    accuracy(pd.read_csv(ANNOTATIONS_FILE), pd.read_csv(f"{RESULTS_DIR}\\test_results.csv"))
+    try:
+        accuracy(pd.read_csv(ANNOTATIONS_FILE), pd.read_csv(f"{RESULTS_DIR}\\test_results.csv"))
+    except:
+        accuracy(pd.read_csv(ANNOTATIONS_FILE), pd.read_csv(f"{RESULTS_DIR}/test_results.csv"))
