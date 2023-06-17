@@ -32,9 +32,9 @@ if __name__ == '__main__':
 
     print(f"Final model is a : {model_type}")
 
-    if model_type == "ResNet18":
+    if model_type == "ResNet 18":
         network = ResNet(feature_extract=False, num_of_layers=18)
-    elif model_type == "ResNet50":
+    elif model_type == "ResNet 50":
         network = ResNet(feature_extract=False, num_of_layers=50)
     elif model_type == "VGG11":
         network = VGG11()

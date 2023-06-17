@@ -106,8 +106,35 @@ def demonstrate_result(img_id):
         plt.show()
     elif output[0] > 0.5 and not fake_label:
         print("The model has been wrong. The image does not contain an artificial part")
-    elif output[0] < 0.5 and fake_label:
+    elif output[0] < 0.5 and not fake_label:
         print("The model correctly said that the image does not contain an artificial part")
+    elif output[0] < 0.5 and fake_label:
+        print("The model has been wrong. The image contains an artificial part")
+        # Load and plot the images
+        fig, axes = plt.subplots(2, 2, figsize=(10, 10))
+
+        # Original Image
+        original_image = Image.open(original)
+        axes[0, 0].imshow(original_image)
+        axes[0, 0].set_title("Original Image")
+
+        # Masked Image
+        masked_image = Image.open(original_masked)
+        axes[0, 1].imshow(masked_image)
+        axes[0, 1].set_title("Masked Image")
+
+        # Inpainted Image
+        inpainted_image = Image.open(inpainted_path)
+        axes[1, 0].imshow(inpainted_image)
+        axes[1, 0].set_title("Inpainted Image")
+
+        # Remove axis ticks
+        for ax in axes.flatten():
+            ax.axis("off")
+
+        # Adjust layout
+        plt.tight_layout()
+        plt.show()
 
 
 def draw_bbox(image_path, x_min, y_min, x_max, y_max):

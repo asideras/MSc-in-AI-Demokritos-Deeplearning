@@ -126,6 +126,7 @@ def sample_outputs(model, data_loader, file):
         writer.writerow(['id', 'fake_label', 'x_min', 'y_min', 'x_max', 'y_max'])
         res = []
         with torch.no_grad():
+
             model.eval()
             for batch_idx, batch_data in enumerate(data_loader):
 
