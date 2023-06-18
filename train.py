@@ -297,7 +297,10 @@ if __name__ == '__main__':
 
             bce_loss = criterion1(outputs[:, 0], targets[:, 0])
             if criterion2 == generalized_box_iou_loss:
-                loc_loss = criterion2(outputs[:, 1:], targets[:, 1:], reduction="mean")
+                non_zero_rows = torch.all(targets[:, 1:] != 0, dim=1)
+                filtered_boxes1 = outputs[:, 1:][non_zero_rows]
+                filtered_boxes2 = targets[:, 1:][non_zero_rows]
+                loc_loss = criterion2(filtered_boxes1, filtered_boxes2, reduction="mean")
             else:
                 loc_loss = criterion2(outputs[:, 1:], targets[:, 1:])
 
@@ -323,7 +326,10 @@ if __name__ == '__main__':
 
                 bce_loss = criterion1(outputs[:, 0], targets[:, 0])
                 if criterion2 == generalized_box_iou_loss:
-                    loc_loss = criterion2(outputs[:, 1:], targets[:, 1:], reduction="mean")
+                    non_zero_rows = torch.all(targets[:, 1:] != 0, dim=1)
+                    filtered_boxes1 = outputs[:, 1:][non_zero_rows]
+                    filtered_boxes2 = targets[:, 1:][non_zero_rows]
+                    loc_loss = criterion2(filtered_boxes1, filtered_boxes2, reduction="mean")
                 else:
                     loc_loss = criterion2(outputs[:, 1:], targets[:, 1:])
                 loss = ALPHA * bce_loss + BETA * loc_loss
