@@ -138,7 +138,7 @@ def sample_outputs(model, data_loader, file):
                     ids[i] = '0' * to_fill + ids[i]
 
                 inputs = inputs.to(device)
-                output = model(inputs)
+                output = model(inputs).to(device)
                 classification_neuron = torch.sigmoid(output[:, 0])
                 output = torch.cat((classification_neuron.unsqueeze(1), output[:, 1:]), dim=1)
                 output = output.cpu()
@@ -294,7 +294,7 @@ if __name__ == '__main__':
 
             optimizer.zero_grad()
 
-            outputs = model(inputs)
+            outputs = model(inputs).to(device)
 
             bce_loss = criterion1(outputs[:, 0], targets[:, 0])
             if criterion2 == generalized_box_iou_loss:
@@ -328,7 +328,7 @@ if __name__ == '__main__':
                 inputs = inputs.to(device)
                 targets = targets.to(device)
 
-                outputs = model(inputs)
+                outputs = model(inputs).to(device)
 
                 bce_loss = criterion1(outputs[:, 0], targets[:, 0])
                 if criterion2 == generalized_box_iou_loss:
