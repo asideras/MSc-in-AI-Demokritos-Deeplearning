@@ -137,7 +137,7 @@ def sample_outputs(model, data_loader, file):
                     to_fill = 8 - len(ids[i])
                     ids[i] = '0' * to_fill + ids[i]
 
-                inputs.to(device)
+                inputs = inputs.to(device)
                 output = model(inputs)
                 classification_neuron = torch.sigmoid(output[:, 0])
                 output = torch.cat((classification_neuron.unsqueeze(1), output[:, 1:]), dim=1)
@@ -289,8 +289,8 @@ if __name__ == '__main__':
         avg_batch_loss_train.clear()
         batch_counter = 1
         for id, inputs, targets in train_dataloader:
-            inputs.to(device)
-            targets.to(device)
+            inputs = inputs.to(device)
+            targets = targets.to(device)
 
             optimizer.zero_grad()
 
@@ -325,8 +325,8 @@ if __name__ == '__main__':
             model.eval()
             avg_batch_loss_val.clear()
             for _, inputs, targets in validation_dataloader:
-                inputs.to(device)
-                targets.to(device)
+                inputs = inputs.to(device)
+                targets = targets.to(device)
 
                 outputs = model(inputs)
 
