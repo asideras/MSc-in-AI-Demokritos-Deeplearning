@@ -39,7 +39,7 @@ def demonstrate_result(img_id):
     print(f"Image path: {inpainted_path}")
 
     network = ResNet(feature_extract=False)
-    print(f"Using {network.name} model\n")
+    #print(f"Using {network.name} model\n")
     model = network.model
     model.load_state_dict(checkpoint['model_state_dict'])
     print(f" checkpoint loss: {checkpoint['loss']}")

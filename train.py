@@ -19,6 +19,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 import numpy as np
 import time
 import seaborn as sns
+import torch.nn.functional as F
 
 
 def calculate_iou(box1, box2):
@@ -300,7 +301,12 @@ if __name__ == '__main__':
                 non_zero_rows = torch.all(targets[:, 1:] != 0, dim=1)
                 filtered_boxes1 = outputs[:, 1:][non_zero_rows]
                 filtered_boxes2 = targets[:, 1:][non_zero_rows]
+
+                filtered_boxes1 = F.relu(filtered_boxes1)
+
                 loc_loss = criterion2(filtered_boxes1, filtered_boxes2, reduction="mean")
+                if loc_loss < 0:
+                    print("negative loss!")
             else:
                 loc_loss = criterion2(outputs[:, 1:], targets[:, 1:])
 
@@ -329,6 +335,9 @@ if __name__ == '__main__':
                     non_zero_rows = torch.all(targets[:, 1:] != 0, dim=1)
                     filtered_boxes1 = outputs[:, 1:][non_zero_rows]
                     filtered_boxes2 = targets[:, 1:][non_zero_rows]
+
+                    filtered_boxes1 = F.relu(filtered_boxes1)
+
                     loc_loss = criterion2(filtered_boxes1, filtered_boxes2, reduction="mean")
                 else:
                     loc_loss = criterion2(outputs[:, 1:], targets[:, 1:])
