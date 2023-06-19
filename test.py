@@ -42,8 +42,10 @@ if __name__ == '__main__':
         network = ALEXNET()
     else:
         raise ValueError("Wrong network option")
-
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"Using {device} device\n")
     model = network.model
+    model = model.to(device)
     model.load_state_dict(checkpoint['model_state_dict'])
 
     test_data = InpaintedDataset(annotations_file=ANNOTATIONS_FILE,

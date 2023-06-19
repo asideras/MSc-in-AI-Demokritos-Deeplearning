@@ -121,7 +121,8 @@ def accuracy(ground_truth_df, test_preds_df):
 
 def sample_outputs(model, data_loader, file):
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    print(f"Using {device} device\n")
+    
+
     with open(file, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['id', 'fake_label', 'x_min', 'y_min', 'x_max', 'y_max'])
@@ -213,6 +214,7 @@ if __name__ == '__main__':
 
     print(f"Using {network.name} model\n")
     model = network.model
+    model = model.to(device)
 
     params = sum(p.numel() for p in model.parameters() if p.requires_grad)
 
