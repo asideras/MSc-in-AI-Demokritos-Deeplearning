@@ -4,7 +4,7 @@ import pandas as pd
 import torch
 import yaml
 from torchvision.ops import generalized_box_iou_loss
-from Model.Losses import L2Loss
+from Model.Losses import L2Loss, giou_loss
 from torch import nn
 from torch.utils.data import DataLoader
 from torchvision import transforms
@@ -201,7 +201,7 @@ if __name__ == '__main__':
 
     localization_loss_options = {"MSE_lOSS": nn.MSELoss(),
                                  "SMOOTH_L1_LOSS": nn.SmoothL1Loss(),
-                                 "GIoU": generalized_box_iou_loss,
+                                 "GIoU": giou_loss,
                                  "L2_LOSS": L2Loss()}
 
     criterion1 = nn.BCEWithLogitsLoss()
@@ -299,16 +299,15 @@ if __name__ == '__main__':
             outputs = model(inputs).to(device)
 
             bce_loss = criterion1(outputs[:, 0], targets[:, 0])
-            if criterion2 == generalized_box_iou_loss:
+            if criterion2 == giou_loss:
                 non_zero_rows = torch.all(targets[:, 1:] != 0, dim=1)
                 filtered_boxes1 = outputs[:, 1:][non_zero_rows]
                 filtered_boxes2 = targets[:, 1:][non_zero_rows]
 
                 filtered_boxes1 = F.relu(filtered_boxes1)
 
-                loc_loss = criterion2(filtered_boxes1, filtered_boxes2, reduction="mean")
-                if loc_loss < 0:
-                    print("negative loss!")
+                loc_loss = criterion2(filtered_boxes1, filtered_boxes2)
+
             else:
                 loc_loss = criterion2(outputs[:, 1:], targets[:, 1:])
 
@@ -333,14 +332,14 @@ if __name__ == '__main__':
                 outputs = model(inputs).to(device)
 
                 bce_loss = criterion1(outputs[:, 0], targets[:, 0])
-                if criterion2 == generalized_box_iou_loss:
+                if criterion2 == giou_loss:
                     non_zero_rows = torch.all(targets[:, 1:] != 0, dim=1)
                     filtered_boxes1 = outputs[:, 1:][non_zero_rows]
                     filtered_boxes2 = targets[:, 1:][non_zero_rows]
 
                     filtered_boxes1 = F.relu(filtered_boxes1)
 
-                    loc_loss = criterion2(filtered_boxes1, filtered_boxes2, reduction="mean")
+                    loc_loss = criterion2(filtered_boxes1, filtered_boxes2)
                 else:
                     loc_loss = criterion2(outputs[:, 1:], targets[:, 1:])
                 loss = ALPHA * bce_loss + BETA * loc_loss
