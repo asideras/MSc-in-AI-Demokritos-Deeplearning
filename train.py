@@ -308,6 +308,9 @@ if __name__ == '__main__':
 
                 loc_loss = criterion2(filtered_boxes1, filtered_boxes2)
 
+                if loc_loss < 0 :
+                    print("")
+
             else:
                 loc_loss = criterion2(outputs[:, 1:], targets[:, 1:])
 
