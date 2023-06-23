@@ -1,1 +1,1 @@
-# MSc-in-AI-Demokritos-Deeplearning
+http://places2.csail.mit.edu/download.html 
