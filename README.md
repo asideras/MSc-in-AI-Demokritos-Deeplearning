@@ -8,8 +8,20 @@ Now that we have a dataset comprising of images that contain an artificial regio
 
 ## Contents
 
-- Data samples: A folder that contains some samples of the images for illustration reasons.
-   - Inpainted folder contains the final edited images that our model gets as input
-- Bullet point 2
-- Bullet point 3
- 
+- [Data samples](Data%20Samples): A folder that contains some samples of the images for illustration reasons.
+   - Inpainted folder contains the final edited images that our model gets as input.
+   - masks folder contains the corresponding mask for each masked image that DeepFillv2_Pytorch got as input.
+   - original folder contains the original images from Places365.
+   - original_masked folder contains the images that DeepFillv2_Pytorch got as input (along with the corresponding masks).
+- [Model](Model): A folder that contains the python files that defines our neural network models
+   - Losses.py is contains some implemented loss functions we used.
+   - data_loader is a script that loads the data from the correct folder (original or inpainted, as our model has to distinguish between them), splits them into batches and feed them to the model.     - network.py loads pretrained models and creates the corresponding classes in order to manupulate them properly.
+- [Utils](Utils): A folder that contains some helper scripts.
+   - [IoC.py](IoC.py): A script that contains the computation of Intersection Over Union metric used as performance metric for the localization part.
+   - [create_masks.py](create_masks.py): A script used for the mask creation. It produces a uniformly mask box and saves this mask to a different image.
+   - [draw_boxes.py](draw_boxes.py): Contains method that actually draws the predicted bounding box. And the method demonstrate_result, that loads the final model and make inferences about images
+- [anns_class_local.csv](anns_class_local.cs) contains the ground truth labels for each image. It's a 5-dimensional vector with a boolean value representing whether the image has been inpainted or not, and the 4 coordinates (xmin,ymin,xmax,ymax) that locate the inpainted region.
+- [demo.ipynb](demo.ipynb) is a jupyter notebook that illustrates some random sampled results. It imports and uses the demonstrate_result method from Utils.draw_boxes.
+- [requirements.txt](requirements.txt) is a file that contains all the packages needed to run the code.
+- [test.py](test.py) contains the testing code.
+- [train.py](train.py) contains all the training code.
