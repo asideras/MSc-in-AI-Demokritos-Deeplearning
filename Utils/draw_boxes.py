@@ -34,7 +34,8 @@ def demonstrate_result(img_id):
         inpainted_path = original
 
     checkpoint = torch.load(
-        "C:\\Users\\ANDRE\\OneDrive\\Desktop\\Andreas_Sideras\\Demokritos\\Msc in AI\\2nd Semester\\Deep Learning\\Classification and Localization of Inpainted Regions\\Classification and Localization\\Model Checkpoint\\model.pt")
+        "C:\\Users\\ANDRE\\OneDrive\\Desktop\\Andreas_Sideras\\Demokritos\\Msc in AI\\2nd Semester\\Deep Learning\\Classification and Localization of Inpainted Regions\\Classification and Localization\\Model Checkpoint\\model.pt",
+    map_location=torch.device('cpu'))
 
     print(f"Image path: {inpainted_path}")
 

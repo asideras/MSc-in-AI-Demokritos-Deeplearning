@@ -1,31 +1,29 @@
 # data loading
-IMG_DIR_INPAINTED: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\Classification and Localization\\\\Data\\\\inpainted"
-IMG_DIR_ORIGINAL:  "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\Classification and Localization\\\\Data\\\\original"
+IMG_DIR_INPAINTED: "/content/content/drive/MyDrive/DeepFillv2_Pytorch/results"
+IMG_DIR_ORIGINAL: "/content/val_256"
 
-
-ANNOTATIONS_FILE: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\Classification and Localization\\\\Data\\\\anns_class_local.csv"
+ANNOTATIONS_FILE: "/content/MSc-in-AI-Demokritos-Deeplearning/anns_class_local.csv"
 
 TRAIN_VAL_TEST_SPLIT:
-  num_training_samples: 6000
-  num_validation_samples: 1000
-  num_testing_samples: 1000
+  num_training_samples: 25000
+  num_validation_samples: 5000
+  num_testing_samples: 6500
 
 #model selection
-#OPTIONS: ResNet18,ResNet50, VGG11,ALEXNET, myNetwork
-MODEL: ResNet18
-
+#OPTIONS: ResNet18,ResNet50, VGG11,ALEXNET
+MODEL: ResNet50
 
 # model hyperparameters
 NUM_EPOCHS: 7
-BATCH_SIZE: 64
+BATCH_SIZE: 512
 LEARNING_RATE: 0.001
 
 #OPTIONS: MSE_lOSS, SMOOTH_L1_LOSS, GIoU, L2_LOSS
 LOCALIZATION_LOSS: "SMOOTH_L1_LOSS"
 
-ALPHA : 100
-BETA : 0.8
+ALPHA: 100
+BETA: 0.8
 
 # output
-RESULTS_DIR: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\Classification and Localization\\\\Results"
-CHECKPOINT_PATH: "C:\\\\Users\\\\ANDRE\\\\OneDrive\\\\Desktop\\\\Andreas_Sideras\\\\Demokritos\\\\Msc in AI\\\\2nd Semester\\\\Deep Learning\\\\Classification and Localization of Inpainted Regions\\\\Classification and Localization\\\\Model Checkpoint\\\\model.pt"
+RESULTS_DIR: "/content/MSc-in-AI-Demokritos-Deeplearning/"
+CHECKPOINT_PATH: "/content/MSc-in-AI-Demokritos-Deeplearning/model.pt"
