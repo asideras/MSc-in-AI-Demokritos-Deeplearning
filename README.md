@@ -16,7 +16,7 @@ Now that we have a dataset comprising of images that contain an artificial regio
 - [Model](Model): A folder that contains the python files that defines our neural network models
    - [Losses.py](Model/Losses.py) contains some implemented loss functions we used.
    - [data_loader.py](Model/data_loader.py) is a script that loads the data from the correct folder (original or inpainted, as our model has to distinguish between them), splits them into batches and feed them to the model.
-  - [network.py](Model/network.py) loads pretrained models and creates the corresponding classes in order to manupulate them properly.
+  - [network.py](Model/network.py) loads pretrained models and creates the corresponding classes in order to manipulate them properly.
 - [Utils](Utils): A folder that contains some helper scripts.
    - [IoC.py](Utils/IoC.py): A script that contains the computation of Intersection Over Union metric used as performance metric for the localization part.
    - [create_masks.py](Utils/create_masks.py): A script used for the mask creation. It produces a uniformly mask box and saves this mask to a different image.
