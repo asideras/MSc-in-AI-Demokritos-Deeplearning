@@ -8,14 +8,15 @@ Now that we have a dataset comprising of images that contain an artificial regio
 
 ## Contents
 
-- [Data samples](Data%20Samples): A folder that contains some samples of the images for illustration reasons.
+- [Data samples](Data%20Samples): A folder that contains some samples of the images for illustration purposes.
    - [inpainted](Data%20Samples/inpainted/) folder contains the final edited images that our model gets as input.
-   - [masks](Data%20Samples/masks/) folder contains the corresponding mask for each masked image that DeepFillv2_Pytorch got as input.
+   - [masks](Data%20Samples/masks/) folder contains the corresponding mask for each masked image that DeepFillv2_Pytorch gets as input.
    - [original](Data%20Samples/original/) folder contains the original images from Places365.
    - [original_masked](Data%20Samples/original_masked/) folder contains the images that DeepFillv2_Pytorch got as input (along with the corresponding masks).
 - [Model](Model): A folder that contains the python files that defines our neural network models
-   - Losses.py is contains some implemented loss functions we used.
-   - data_loader is a script that loads the data from the correct folder (original or inpainted, as our model has to distinguish between them), splits them into batches and feed them to the model.     - network.py loads pretrained models and creates the corresponding classes in order to manupulate them properly.
+   - [Losses.py](Losses.py) contains some implemented loss functions we used.
+   - [data_loader.py](data_loader.py) is a script that loads the data from the correct folder (original or inpainted, as our model has to distinguish between them), splits them into batches and feed them to the model.
+  - [network.py](network.py) loads pretrained models and creates the corresponding classes in order to manupulate them properly.
 - [Utils](Utils): A folder that contains some helper scripts.
    - [IoC.py](IoC.py): A script that contains the computation of Intersection Over Union metric used as performance metric for the localization part.
    - [create_masks.py](create_masks.py): A script used for the mask creation. It produces a uniformly mask box and saves this mask to a different image.
