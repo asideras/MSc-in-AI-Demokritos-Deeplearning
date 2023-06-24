@@ -22,6 +22,7 @@ Now that we have a dataset comprising of images that contain an artificial regio
    - [create_masks.py](Utils/create_masks.py): A script used for the mask creation. It produces a uniformly mask box and saves this mask to a different image.
    - [draw_boxes.py](Utils/draw_boxes.py): Contains method that actually draws the predicted bounding box. And the method demonstrate_result, that loads the final model and make inferences about images
 - [anns_class_local.csv](anns_class_local.csv) contains the ground truth labels for each image. It's a 5-dimensional vector with a boolean value representing whether the image has been inpainted or not, and the 4 coordinates (xmin,ymin,xmax,ymax) that locate the inpainted region.
+- [config.yaml](config.yaml) A configuration file where the paths of the image folders are specified and the hyperparameters are selected.
 - [demo.ipynb](demo.ipynb) is a jupyter notebook that illustrates some random sampled results. It imports and uses the demonstrate_result method from Utils.draw_boxes.
 - [requirements.txt](requirements.txt) is a file that contains all the packages needed to run the code.
 - [test.py](test.py) contains the testing code.
