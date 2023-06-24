@@ -9,10 +9,10 @@ Now that we have a dataset comprising of images that contain an artificial regio
 ## Contents
 
 - [Data samples](Data%20Samples): A folder that contains some samples of the images for illustration reasons.
-   - Inpainted folder contains the final edited images that our model gets as input.
-   - masks folder contains the corresponding mask for each masked image that DeepFillv2_Pytorch got as input.
-   - original folder contains the original images from Places365.
-   - original_masked folder contains the images that DeepFillv2_Pytorch got as input (along with the corresponding masks).
+   - [inpainted](Data%20Samples/inpainted/) folder contains the final edited images that our model gets as input.
+   - [masks](Data%20Samples/masks/) folder contains the corresponding mask for each masked image that DeepFillv2_Pytorch got as input.
+   - [original](Data%20Samples/original/) folder contains the original images from Places365.
+   - [original_masked](Data%20Samples/original_masked/) folder contains the images that DeepFillv2_Pytorch got as input (along with the corresponding masks).
 - [Model](Model): A folder that contains the python files that defines our neural network models
    - Losses.py is contains some implemented loss functions we used.
    - data_loader is a script that loads the data from the correct folder (original or inpainted, as our model has to distinguish between them), splits them into batches and feed them to the model.     - network.py loads pretrained models and creates the corresponding classes in order to manupulate them properly.
