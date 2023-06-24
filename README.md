@@ -24,6 +24,7 @@ Now that we have a dataset comprising of images that contain an artificial regio
 - [anns_class_local.csv](anns_class_local.csv) contains the ground truth labels for each image. It's a 5-dimensional vector with a boolean value representing whether the image has been inpainted or not, and the 4 coordinates (xmin,ymin,xmax,ymax) that locate the inpainted region.
 - [config.yaml](config.yaml) A configuration file where the paths of the image folders are specified and the hyperparameters are selected.
 - [demo.ipynb](demo.ipynb) is a jupyter notebook that illustrates some random sampled results. It imports and uses the demonstrate_result method from Utils.draw_boxes.
+- [presentation.pdf](presentation.pdf) The presentation slides.
 - [requirements.txt](requirements.txt) is a file that contains all the packages needed to run the code.
 - [test.py](test.py) contains the testing code.
 - [train.py](train.py) contains all the training code.
