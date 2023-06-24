@@ -9,7 +9,7 @@ Now that we have a dataset comprising of images that contain an artificial regio
 ## Contents
 
 - Data samples: A folder that contains some samples of the images for illustration reasons.
-   -Inpainted folder contains the final edited images that our model gets as input
+   - Inpainted folder contains the final edited images that our model gets as input
 - Bullet point 2
 - Bullet point 3
  
